@@ -1,0 +1,37 @@
+# Fly.io config for LIFELINE. Run `fly launch --no-deploy` once to claim an app
+# name, then edit `app` below if needed. Secrets are set separately (see README).
+app = "lifeline-rahulc"
+primary_region = "bom" # Mumbai — close to the owner
+
+[build]
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3000"
+  # SQLite lives on the persistent volume mounted at /data.
+  DATABASE_PATH = "/data/lifeline.db"
+  COOKIE_SECURE = "true"
+  OWNER_TZ = "Asia/Kolkata"
+
+# Persistent disk for the SQLite database. Create it with:
+#   fly volumes create lifeline_data --size 1 --region bom
+[[mounts]]
+  source = "lifeline_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    method = "GET"
+    path = "/api/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
