@@ -19,6 +19,7 @@ import OwnerToolbar from './OwnerToolbar.js';
 import Toast from './Toast.js';
 import PrivacyMask from './PrivacyMask.js';
 import MoneyStat from './MoneyStat.js';
+import { Card, Badge, AsciiSpinner } from './ui/index.js';
 
 export default function Dashboard({ board }: { board: AnyBoard }) {
   const isOwner = board.isOwner;
@@ -28,8 +29,8 @@ export default function Dashboard({ board }: { board: AnyBoard }) {
   const [toast, setToast] = useState<string | null>(null);
   const debounce = useRef<ReturnType<typeof setTimeout>>();
 
-  // Privacy mask for money + milestones — default hidden (nazar on) so a
-  // screenshot/screen-share doesn't leak private numbers. Persisted locally.
+  // privacy mask for money + milestones — default hidden so a screenshot /
+  // screen-share doesn't leak private numbers. persisted locally.
   const [hidden, setHidden] = useState(() => localStorage.getItem('ll_reveal') !== '1');
   const toggleHidden = () =>
     setHidden((h) => {
@@ -37,7 +38,7 @@ export default function Dashboard({ board }: { board: AnyBoard }) {
       return !h;
     });
 
-  // Resync the draft only when the calendar day changes (e.g. at midnight) —
+  // resync the draft only when the calendar day changes (e.g. at midnight) —
   // otherwise the draft is client-owned and survives each auto-save round-trip.
   useEffect(() => {
     setDraft(todaysDraft(board));
@@ -54,17 +55,17 @@ export default function Dashboard({ board }: { board: AnyBoard }) {
         onSuccess: (res) => {
           if (res.newlyUnlocked.length > 0) {
             const r = res.newlyUnlocked[0];
-            setToast(`🎉 Reward unlocked: ${r.emoji ?? ''} ${r.label}!`);
+            setToast(`★ reward unlocked: ${r.label.toLowerCase()}!`);
           } else if (nudge !== undefined) {
             setToast(nudge ?? pick(res.messageKey, seed) ?? pick('lockedIn', seed));
           }
         },
-        onError: () => setToast('⚠️ Could not save — are you still logged in? Try /log again.'),
+        onError: () => setToast('△ could not save — are you still logged in? try /log again.'),
       }
     );
   }
 
-  /** A tap: update the UI instantly, then auto-save (debounced). */
+  /** a tap: update the UI instantly, then auto-save (debounced). */
   function onTap(next: DayInput) {
     setDraft(next);
     if (!isOwner) return;
@@ -75,54 +76,51 @@ export default function Dashboard({ board }: { board: AnyBoard }) {
   const engagement = dayEngagement(draft);
 
   return (
-    <div className="mx-auto min-h-screen max-w-5xl px-4 pb-12 pt-4 sm:px-6">
+    <div className="paper-grain mx-auto flex min-h-screen max-w-board flex-col gap-[18px] px-[18px] pb-14 pt-5">
       {!isOwner && <ViewingBadge />}
 
       <HeaderStrip profile={board.profile} />
 
-      {/* TODAY — the daily ritual */}
-      <section className="mt-4 rounded-2xl bg-panel/70 p-4 shadow-lg ring-1 ring-edge sm:p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted">
-            Today
-            {isOwner && saveDay.isPending && <span className="ml-2 text-[11px] normal-case text-muted">saving…</span>}
-            {isOwner && !saveDay.isPending && <span className="ml-2 text-[11px] normal-case text-band-ontrack">auto-saved ✓</span>}
-          </h2>
-          {board.isOwner && (
-            <div className="flex items-center gap-1.5">
+      {/* today — the daily ritual */}
+      <Card
+        label="today"
+        action={
+          isOwner ? (
+            <div className="flex items-center gap-2">
+              {saveDay.isPending ? (
+                <AsciiSpinner variant="blocks" label="saving…" />
+              ) : (
+                <span className="text-xs lowercase text-good">auto-saved ✓</span>
+              )}
               <button
                 onClick={toggleHidden}
-                title={hidden ? 'Reveal private numbers (money & milestones)' : 'Hide private numbers'}
-                className={`rounded-lg px-2 py-1 text-base ring-1 ring-edge hover:bg-card ${hidden ? '' : 'bg-card'}`}
+                title={hidden ? 'reveal private numbers (money & milestones)' : 'hide private numbers'}
+                className="press focus-clay rounded-md border border-line-2 bg-card px-2 py-1 font-mono text-xs lowercase text-ink-2 hover:bg-card-2"
               >
-                {hidden ? '🧿' : '👁️'}
+                {hidden ? 'reveal' : 'hide'}
               </button>
               <OwnerToolbar board={board} />
             </div>
-          )}
-        </div>
-
+          ) : (
+            <Badge tone="neutral">read-only</Badge>
+          )
+        }
+      >
         <TodayTiles draft={draft} isOwner={isOwner} onChange={onTap} />
 
-        <WorkBlocks
-          blocks={draft.blocks}
-          isOwner={isOwner}
-          onChange={(blocks) => onTap({ ...draft, blocks })}
-        />
+        <WorkBlocks blocks={draft.blocks} isOwner={isOwner} onChange={(blocks) => onTap({ ...draft, blocks })} />
 
         {isOwner && <DayStatus engagement={engagement} streak={board.profile.current_streak} />}
-      </section>
+      </Card>
 
-      {/* THE GRID — the hero */}
-      <section className="mt-5 rounded-2xl bg-panel/70 p-4 shadow-lg ring-1 ring-edge sm:p-5">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted">The Grid</h2>
-        <ContributionGrid days={board.days} today={board.today} />
-      </section>
+      {/* the grid — the hero */}
+      <Card label="the grid · 26 weeks">
+        <ContributionGrid days={board.days} today={board.today} weeks={26} />
+      </Card>
 
-      {/* Bottom row: month ring + morale + money, next reward, goals */}
-      <section className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="flex flex-col rounded-2xl bg-panel/70 p-4 ring-1 ring-edge">
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">This Month</h3>
+      {/* bottom row: this month + morale + money, next reward, goals */}
+      <div className="grid grid-cols-1 gap-[18px] md:grid-cols-3">
+        <Card label="this month" className="flex flex-col">
           <MonthRing pct={board.monthPct} band={board.monthBand} />
           <MoraleLine days={board.days} />
           {board.isOwner && (
@@ -132,13 +130,13 @@ export default function Dashboard({ board }: { board: AnyBoard }) {
               </PrivacyMask>
             </div>
           )}
-        </div>
-        <div className="rounded-2xl bg-panel/70 p-4 ring-1 ring-edge">
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">Next Reward</h3>
+        </Card>
+
+        <Card label="next reward">
           <NextReward rewards={board.rewards} monthPct={board.monthPct} />
-        </div>
-        <div className="flex flex-col rounded-2xl bg-panel/70 p-4 ring-1 ring-edge">
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">Goals</h3>
+        </Card>
+
+        <Card label="goals" className="flex flex-col">
           <div className="flex flex-1 flex-col">
             {board.isOwner ? (
               <PrivacyMask hidden={hidden} label="milestones · hidden">
@@ -148,11 +146,11 @@ export default function Dashboard({ board }: { board: AnyBoard }) {
               <GoalsBars goals={board.goals} />
             )}
           </div>
-        </div>
-      </section>
+        </Card>
+      </div>
 
       {board.isOwner && (
-        <div className="mt-5 flex justify-end">
+        <div className="flex justify-end">
           <ShareButton board={board} />
         </div>
       )}

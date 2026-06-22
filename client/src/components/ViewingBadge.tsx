@@ -1,11 +1,18 @@
 import { Link } from 'react-router-dom';
+import { Badge } from './ui/index.js';
 
+/** Top control strip on the public board: who you're viewing + a log-in link. */
 export default function ViewingBadge() {
   return (
-    <div className="mb-3 flex items-center justify-between rounded-xl bg-card/80 px-3 py-2 text-sm ring-1 ring-edge">
-      <span className="text-muted">👀 You're viewing Rahul's board</span>
-      <Link to="/log" className="text-xs text-ink/70 underline-offset-2 hover:underline">
-        owner? log in
+    <div className="mb-[18px] flex items-center justify-between">
+      <Badge tone="neutral" glyph="◦">
+        viewing rahul's board
+      </Badge>
+      <Link
+        to="/log"
+        className="rounded-md border border-line-2 bg-card px-3 py-1.5 text-sm lowercase text-ink no-underline transition-colors hover:bg-card-2 hover:border-muted"
+      >
+        /log in
       </Link>
     </div>
   );

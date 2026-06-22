@@ -1,10 +1,10 @@
-// Shared Tailwind class strings for panel forms.
-export const field = 'flex flex-col gap-1.5 text-sm text-ink/80';
+// Shared Tailwind class strings for panel forms — warm-mono skin.
+export const field = 'flex flex-col gap-1.5 text-sm lowercase text-ink-2';
 export const input =
-  'rounded-lg bg-card px-3 py-2 text-ink ring-1 ring-edge focus:outline-none focus:ring-ink/40';
+  'rounded-md border border-line-2 bg-card-2 px-3 py-2 font-mono text-ink focus-clay outline-none';
 export const primaryBtn =
-  'w-full rounded-xl bg-band-ontrack px-4 py-2.5 font-semibold text-black disabled:opacity-60';
+  'press w-full rounded-md bg-clay px-4 py-2.5 font-medium lowercase text-[var(--on-accent)] transition-colors hover:bg-clay-deep disabled:opacity-45';
 export const ghostBtn =
-  'rounded-lg px-3 py-1.5 text-sm text-ink ring-1 ring-edge hover:bg-card';
+  'press rounded-md border border-line-2 bg-card px-3 py-1.5 text-sm lowercase text-ink hover:bg-card-2';
 export const dangerBtn =
-  'rounded-lg px-2 py-1 text-xs text-band-warn ring-1 ring-edge hover:bg-card';
+  'press rounded-md border border-warn/45 bg-warn-soft px-2 py-1 text-xs lowercase text-clay-deep hover:brightness-95';

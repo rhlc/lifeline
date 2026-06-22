@@ -14,24 +14,25 @@ type MsgKey =
   | 'warn'
   | 'lockedIn';
 
+// all lowercase by convention (non-negotiable rule #1).
 const MESSAGES: Record<MsgKey, string[]> = {
-  morning: ['Uth ja beta, duniya jeetni hai.', 'Naya din, naya jugaad. Chalo shuru karein.'],
-  streak7: ['7 din ho gaye — ab Sharma ji ka beta tu hai.', 'Saat din! Consistency ka tadka.'],
-  missedGym: ['Pet kam hoga toh selfie acchi aayegi. Kal pakka?', 'Gym chhuti? Koi na, kal double.'],
-  foodLost: ['Samosa ne dhoka diya? Koi baat nahi, kal salad.', 'Cheat day bhi zaroori hai, raja.'],
+  morning: ['uth ja beta, duniya jeetni hai.', 'naya din, naya jugaad. chalo shuru karein.'],
+  streak7: ['7 din ho gaye — ab sharma ji ka beta tu hai.', 'saat din! consistency ka tadka.'],
+  missedGym: ['pet kam hoga toh selfie acchi aayegi. kal pakka?', 'gym chhuti? koi na, kal double.'],
+  foodLost: ['samosa ne dhoka diya? koi baat nahi, kal salad.', 'cheat day bhi zaroori hai, raja.'],
   scrollSlip: [
-    'Reels dekh ke abs nahi bante. Phone neeche rakh, raja.',
-    'Doom-scroll detected. Thoda saans le, phir kaam.',
+    'reels nahi, abs. phone neeche rakh, raja.',
+    'doom-scroll detected. thoda saans le, phir kaam.',
   ],
   survivalUsed: [
-    'Aaj bas survive kiya? Bilkul chalega. Zero nahi hai na — bas chalte raho.',
-    'Survive mode on. Aaj itna kaafi hai. Kal phir milte hain.',
+    'aaj bas survive kiya? bilkul chalega. zero nahi hai na — bas chalte raho.',
+    'survive mode on. aaj itna kaafi hai. kal phir milte hain.',
   ],
-  lowMorale: ['Slow din hai? Saans le. Kal naya din.', 'Thoda slow chal raha hai? Theek hai. Aaj sirf saans le.'],
-  month90: ['Aaj toh tu full sigma nikla. Biryani banta hai.', '90% paar! Inaam toh banta hai boss.'],
-  onTrack: ['On track ho. Aise hi chalte raho.', 'Sab badhiya — steady jaa rahe ho.'],
-  warn: ['Kuch gadbad hai. Koi na, chhoti shuruaat karo.', 'Thoda dhyaan de — par tension mat le.'],
-  lockedIn: ['Lock ho gaya. Shabaash.', 'Aaj ka kaam done. Chai pi lo.'],
+  lowMorale: ['slow din hai? saans le. kal naya din.', 'thoda slow chal raha hai? theek hai. aaj sirf saans le.'],
+  month90: ['aaj toh tu full sigma nikla. biryani banta hai.', '90% paar! inaam toh banta hai boss.'],
+  onTrack: ['on track. aise hi chalte raho.', 'sab badhiya — steady jaa rahe ho.'],
+  warn: ['kuch gadbad hai. koi na, chhoti shuruaat karo.', 'thoda dhyaan de — par tension mat le.'],
+  lockedIn: ['lock ho gaya. shabaash.', 'aaj ka kaam done. chai pi lo.'],
 };
 
 /** Pick a copy line for a key. Deterministic-ish rotation by day to avoid jitter. */

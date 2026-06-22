@@ -2,8 +2,113 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   lifeline design system — warm-mono token layer + base.
+   one family (jetbrains mono), warm paper + ink, one clay accent.
+   lowercase is a copy convention, never forced via text-transform.
+   ============================================================ */
+
+/* the provided file is the NL (no-ligatures) regular weight; medium/bold
+   are supplemented from google fonts (linked in index.html). */
+@font-face {
+  font-family: 'JetBrains Mono NL';
+  src: url('./assets/fonts/JetBrainsMonoNL-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+
+  /* --- base: warm paper & ink --- */
+  --paper: #f3ede0;
+  --paper-2: #ece3d2;
+  --card: #fbf7ee;
+  --card-2: #f6f0e3;
+
+  --ink: #2a2520;
+  --ink-2: #5b5244;
+  --muted: #938775;
+  --faint: #c2b6a0;
+
+  --line: #e3dac8;
+  --line-2: #d4c9b3;
+
+  /* --- accent: clay (the one brand color) --- */
+  --clay: #c0572e;
+  --clay-deep: #99401c;
+  --clay-soft: #ecd2bf;
+  --clay-tint: #f6e7dc;
+
+  /* --- status: warm seasonal hues --- */
+  --good: #6f7d3a;
+  --good-soft: #e6e7cd;
+  --warn: #c08a2e;
+  --warn-soft: #f1e3c4;
+  --bonus: #b1552f;
+  --bonus-soft: #f0dccb;
+
+  /* --- contribution grid ramp (warm amber -> clay) --- */
+  --grid-0: #e7ddc9;
+  --grid-1: #e6c98a;
+  --grid-2: #d99a4c;
+  --grid-3: #c56a30;
+  --grid-4: #9e4019;
+
+  --on-accent: #fbf7ee;
+
+  /* --- typography --- */
+  --font-mono: 'JetBrains Mono NL', 'JetBrains Mono', ui-monospace,
+    'SFMono-Regular', 'Menlo', monospace;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-black: 800;
+
+  --fs-display: 44px;
+  --fs-h1: 28px;
+  --fs-h2: 20px;
+  --fs-h3: 16px;
+  --fs-body: 14px;
+  --fs-sm: 12.5px;
+  --fs-xs: 11px;
+  --fs-mini: 10px;
+
+  --lh-tight: 1.05;
+  --lh-snug: 1.3;
+  --lh-body: 1.55;
+
+  --ls-display: -0.02em;
+  --ls-tight: -0.01em;
+  --ls-normal: 0;
+  --ls-label: 0.06em;
+  --ls-wide: 0.14em;
+
+  /* --- radius --- */
+  --r-xs: 3px;
+  --r-sm: 5px;
+  --r-md: 7px;
+  --r-lg: 10px;
+  --r-xl: 14px;
+  --r-pill: 999px;
+
+  /* --- shadows (barely-there, warm-tinted) --- */
+  --shadow-xs: 0 1px 1px rgba(42, 37, 32, 0.04);
+  --shadow-sm: 0 1px 2px rgba(42, 37, 32, 0.05), 0 1px 0 rgba(42, 37, 32, 0.02);
+  --shadow-md: 0 2px 8px rgba(42, 37, 32, 0.07);
+  --shadow-lg: 0 8px 28px rgba(42, 37, 32, 0.1);
+
+  /* --- motion (calm, no bounce) --- */
+  --ease: cubic-bezier(0.2, 0, 0.1, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-1: 0.08s;
+  --dur-2: 0.16s;
+  --dur-3: 0.28s;
+
+  /* --- focus ring (clay) --- */
+  --ring: 0 0 0 2px var(--paper), 0 0 0 3.5px var(--clay);
 }
 
 html,
@@ -14,34 +119,80 @@ body,
 
 body {
   margin: 0;
-  font-family: 'Open Sans', system-ui, sans-serif;
-  background: radial-gradient(1200px 600px at 50% -10%, #1b2433 0%, #0d1118 60%);
-  color: theme('colors.ink');
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-normal);
+  background: var(--paper);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--clay-soft);
+  color: var(--clay-deep);
+}
+
+/* the one piece of brand texture: two barely-visible radial washes (faint
+   clay + faint olive) suggesting paper. opt in with .paper-grain. */
+.paper-grain {
+  background-image:
+    radial-gradient(circle at 25% 15%, rgba(192, 87, 46, 0.025) 0, transparent 38%),
+    radial-gradient(circle at 80% 80%, rgba(111, 125, 58, 0.025) 0, transparent 42%);
 }
 
 @layer utilities {
-  .tile-pop {
-    transition: transform 0.08s ease, background-color 0.15s ease, border-color 0.15s ease;
+  /* press = a subtle shrink, no color flash. calm motion. */
+  .press {
+    transition: transform var(--dur-1) var(--ease),
+      background-color var(--dur-2) var(--ease),
+      border-color var(--dur-2) var(--ease);
   }
-  .tile-pop:active {
-    transform: scale(0.94);
+  .press:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+  /* clay focus ring on paper */
+  .focus-clay:focus-visible {
+    outline: none;
+    box-shadow: var(--ring);
   }
 }
 
-@keyframes pop-in {
-  0% { transform: scale(0.8); opacity: 0; }
-  60% { transform: scale(1.05); }
-  100% { transform: scale(1); opacity: 1; }
-}
-.animate-pop-in {
-  animation: pop-in 0.35s ease-out;
-}
-
+/* calm entrances — no bounce, short fade/rise. */
 @keyframes float-up {
-  0% { transform: translateY(8px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+  0% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 .animate-float-up {
-  animation: float-up 0.3s ease-out;
+  animation: float-up var(--dur-3) var(--ease-out);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-fade-in {
+  animation: fade-in var(--dur-2) var(--ease);
+}
+
+/* reduced motion: freeze ascii loops + transitions (never strobe). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
