@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLogin } from '../api/queries.js';
+import { Wordmark, Button } from '../components/ui/index.js';
+import { input as inputCls } from '../components/panels/ui.js';
 
 export default function LoginPage() {
   const [password, setPassword] = useState('');
@@ -13,36 +15,36 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <form onSubmit={submit} className="w-full max-w-sm rounded-2xl bg-panel p-6 shadow-xl ring-1 ring-edge">
-        <div className="mb-1 text-center text-4xl">🔥</div>
-        <h1 className="mb-1 text-center text-xl font-bold">LIFELINE</h1>
-        <p className="mb-5 text-center text-sm text-muted">Owner login · bas chalte raho</p>
+    <div className="paper-grain flex min-h-screen items-center justify-center px-4">
+      <form
+        onSubmit={submit}
+        className="flex w-full max-w-[340px] flex-col gap-4 rounded-lg border border-line bg-card p-7 shadow-sm"
+      >
+        <div className="flex justify-center">
+          <Wordmark variant="lockup" size="lg" />
+        </div>
+        <p className="text-center text-sm lowercase text-muted">owner login · bas chalte raho</p>
 
         <input
           type="password"
           autoFocus
-          placeholder="Password"
+          placeholder="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg bg-card px-3 py-2.5 text-ink ring-1 ring-edge focus:outline-none focus:ring-ink/40"
+          className={`${inputCls} w-full`}
         />
 
         {login.isError && (
-          <div className="mt-2 text-sm text-band-warn">
-            {(login.error as Error).message || 'Login failed'}
+          <div className="text-sm lowercase text-warn">
+            {((login.error as Error).message || 'login failed').toLowerCase()}
           </div>
         )}
 
-        <button
-          type="submit"
-          disabled={login.isPending}
-          className="mt-4 w-full rounded-xl bg-band-ontrack px-4 py-2.5 font-semibold text-black disabled:opacity-60"
-        >
-          {login.isPending ? 'Checking…' : 'Log in'}
-        </button>
+        <Button type="submit" variant="primary" full disabled={login.isPending}>
+          {login.isPending ? 'checking…' : 'log in'}
+        </Button>
 
-        <Link to="/" className="mt-4 block text-center text-xs text-muted hover:underline">
+        <Link to="/" className="block text-center text-xs lowercase text-muted no-underline hover:text-ink-2">
           ← back to the board
         </Link>
       </form>

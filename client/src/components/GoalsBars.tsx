@@ -1,41 +1,40 @@
 import type { Goal, GoalScope } from '@lifeline/shared';
+import { ProgressBar } from './ui/index.js';
 
-const LABELS: Record<GoalScope, string> = { month: 'Mo', quarter: 'Qtr', year: 'Yr' };
+const LABELS: Record<GoalScope, string> = { month: 'mo', quarter: 'qtr', year: 'yr' };
 const ORDER: GoalScope[] = ['month', 'quarter', 'year'];
 
-/** Three tiny progress bars: month / quarter / year (spec §4d). */
+/** Three ascii progress bars: month / quarter / year. */
 export default function GoalsBars({ goals }: { goals: Goal[] }) {
   if (goals.length === 0) {
     return (
-      <div className="flex h-full min-h-[120px] flex-col items-center justify-center text-center text-muted">
-        <div className="mb-2 text-3xl opacity-70">🎯</div>
-        <div className="text-sm">No goals yet.</div>
-        <div className="text-xs">Set your Month / Quarter / Year targets.</div>
+      <div className="flex h-full min-h-[120px] flex-col items-center justify-center text-center lowercase text-muted">
+        <div className="mb-2 font-mono text-2xl text-faint">[ ]</div>
+        <div className="text-sm">no goals yet.</div>
+        <div className="text-xs">set your month / quarter / year targets.</div>
       </div>
     );
   }
 
-  // Show the latest goal per scope.
+  // show the latest goal per scope.
   const byScope = new Map<GoalScope, Goal>();
   for (const g of goals) byScope.set(g.scope, g);
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-4">
       {ORDER.map((scope) => {
         const g = byScope.get(scope);
         return (
           <div key={scope}>
-            <div className="mb-1 flex items-center justify-between text-xs">
-              <span className="font-semibold text-ink/80">{LABELS[scope]}</span>
-              <span className="text-muted">{g ? `${g.progress}%` : '—'}</span>
-            </div>
-            <div className="h-2 overflow-hidden rounded-full bg-edge">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-band-bonus to-grid-4"
-                style={{ width: `${g?.progress ?? 0}%` }}
-              />
-            </div>
-            {g && <div className="mt-1 truncate text-[11px] text-muted">{g.text}</div>}
+            <ProgressBar
+              value={g?.progress ?? 0}
+              cells={18}
+              tone="bonus"
+              brackets
+              label={LABELS[scope]}
+              showValue
+            />
+            {g && <div className="mt-1 truncate text-[11px] lowercase text-muted">{g.text.toLowerCase()}</div>}
           </div>
         );
       })}

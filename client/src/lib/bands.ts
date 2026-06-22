@@ -1,22 +1,28 @@
 import { gridLevel, type MonthBand } from '@lifeline/shared';
 
-/** Tailwind bg class for a grid cell given its day score %. */
+/**
+ * Cell appearance for a grid square given its day score %. Logged days use the
+ * warm amber→clay ramp; unlogged days are a transparent square with a hairline
+ * border, so the grid reads as a contribution graph (warm-mono re-skin).
+ */
 export function gridCellClass(scorePct: number, logged: boolean): string {
-  // Empty/unlogged days are a faint solid square — no border, so the grid
-  // reads as a contribution graph rather than a sea of checkboxes.
-  if (!logged) return 'bg-white/[0.04]';
+  if (!logged) return 'bg-transparent border border-line';
   const lvl = gridLevel(scorePct);
-  return ['bg-white/[0.04]', 'bg-grid-1', 'bg-grid-2', 'bg-grid-3', 'bg-grid-4'][lvl];
+  const ramp = ['bg-grid-0', 'bg-grid-1', 'bg-grid-2', 'bg-grid-3', 'bg-grid-4'][lvl];
+  return `${ramp} border border-ink/[0.06]`;
 }
 
+/** Inline color for the month ring stroke + band label. */
 export function bandColor(band: MonthBand): string {
-  return { warn: '#f5a524', ontrack: '#4fae6a', bonus: '#a855f7' }[band];
+  return { warn: 'var(--warn)', ontrack: 'var(--good)', bonus: 'var(--bonus)' }[band];
 }
 
+/** lowercase band label with an ascii status glyph (no emoji). */
 export function bandLabel(band: MonthBand): string {
-  return { warn: '⚠️ Kuch gadbad hai', ontrack: '✅ On track', bonus: '🎉 Bonus unlocked!' }[band];
+  return { warn: '△ keep going', ontrack: '✓ on track', bonus: '★ bonus unlocked' }[band];
 }
 
-export function bandTextClass(band: MonthBand): string {
-  return { warn: 'text-band-warn', ontrack: 'text-band-ontrack', bonus: 'text-band-bonus' }[band];
+/** Map a month band to a Badge/ProgressBar tone. */
+export function bandTone(band: MonthBand): 'warn' | 'good' | 'bonus' {
+  return ({ warn: 'warn', ontrack: 'good', bonus: 'bonus' } as const)[band];
 }

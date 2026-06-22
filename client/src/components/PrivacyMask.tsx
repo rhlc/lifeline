@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 
 /**
- * Blurs its children behind a 🧿 (nazar) overlay when `hidden`. Used to keep
- * private numbers — money + milestones — safe during screen-shares/screenshots.
+ * Blurs its children behind a glyph overlay when `hidden`. Keeps private
+ * numbers — money + milestones — safe during screen-shares/screenshots.
  */
 export default function PrivacyMask({
   hidden,
@@ -19,8 +19,11 @@ export default function PrivacyMask({
         {children}
       </div>
       {hidden && (
-        <div className="absolute inset-0 flex items-center justify-center gap-1.5 text-sm text-muted">
-          <span className="text-xl">🧿</span> {label}
+        <div className="absolute inset-0 flex items-center justify-center gap-2 text-sm lowercase text-muted">
+          <span aria-hidden="true" className="font-mono font-bold text-faint">
+            [×]
+          </span>
+          {label}
         </div>
       )}
     </div>

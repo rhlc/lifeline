@@ -21,30 +21,30 @@ export default function SettingsPanel({ board, open, onClose }: { board: Board; 
   };
 
   return (
-    <SlideOver open={open} title="⚙️ Settings" onClose={onClose}>
+    <SlideOver open={open} title="settings" onClose={onClose}>
       <form onSubmit={submit} className="space-y-4">
         <label className={field}>
-          <span>Wake target</span>
+          <span>wake target</span>
           <input type="time" className={inputCls} value={form.wake_target} onChange={(e) => setForm({ ...form, wake_target: e.target.value })} />
         </label>
         <label className={field}>
-          <span>Steps target</span>
+          <span>steps target</span>
           <input type="number" className={inputCls} value={form.steps_target} onChange={(e) => setForm({ ...form, steps_target: Number(e.target.value) })} />
         </label>
         <label className={field}>
-          <span>Work blocks / day</span>
+          <span>work blocks / day</span>
           <input type="number" min={1} max={12} className={inputCls} value={form.work_blocks} onChange={(e) => setForm({ ...form, work_blocks: Number(e.target.value) })} />
         </label>
         <label className={field}>
-          <span>Block length (hrs)</span>
+          <span>block length (hrs)</span>
           <input type="number" min={1} max={12} className={inputCls} value={form.block_length_hrs} onChange={(e) => setForm({ ...form, block_length_hrs: Number(e.target.value) })} />
         </label>
         <label className={field}>
-          <span>🔒 Monthly savings target (private)</span>
+          <span>monthly savings target (private)</span>
           <input type="number" className={inputCls} value={form.monthly_savings_target} onChange={(e) => setForm({ ...form, monthly_savings_target: Number(e.target.value) })} />
         </label>
         <button type="submit" disabled={save.isPending} className={primaryBtn}>
-          {save.isPending ? 'Saving…' : 'Save settings'}
+          {save.isPending ? 'saving…' : 'save settings'}
         </button>
       </form>
     </SlideOver>

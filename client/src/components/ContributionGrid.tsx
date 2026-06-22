@@ -15,32 +15,29 @@ interface Props {
   fixedCell?: number;
 }
 
-const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const WEEKDAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', '']; // rows Sun..Sat
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+const WEEKDAY_LABELS = ['', 'mon', '', 'wed', '', 'fri', '']; // rows Sun..Sat
 const LABEL_H = 14;
 
-/** GitHub-style contribution grid — the hero visual (spec §5d). */
-export default function ContributionGrid({ days, today, weeks = 52, fixedCell }: Props) {
+/** GitHub-style contribution grid — the hero visual, on warm paper. */
+export default function ContributionGrid({ days, today, weeks = 26, fixedCell }: Props) {
   const byDay = new Map(days.map((d) => [d.day, d]));
   const matrix = buildGridMatrix(today, weeks);
   const [hover, setHover] = useState<{ x: number; y: number; text: string } | null>(null);
 
-  const rowH = fixedCell ?? 15;
+  const rowH = fixedCell ?? 13;
   const colMonth = matrix.map((col) => {
     const firstDate = col.find((d): d is string => d !== null);
     return firstDate ? monthKey(firstDate) : null;
   });
 
-  // Cell width: fixed px in card mode, else 100% (column flexes).
-  const cellStyle = fixedCell
-    ? { width: fixedCell, height: rowH }
-    : { height: rowH };
+  const cellStyle = fixedCell ? { width: fixedCell, height: rowH } : { height: rowH };
 
   return (
     <div className="relative">
       <div className="flex gap-2 pb-1">
-        {/* Weekday labels */}
-        <div className="flex shrink-0 flex-col gap-[3px] text-[10px] text-muted">
+        {/* weekday labels */}
+        <div className="flex shrink-0 flex-col gap-[3px] text-[10px] lowercase text-muted">
           <div style={{ height: LABEL_H }} />
           {WEEKDAY_LABELS.map((lbl, i) => (
             <div key={i} className="flex items-center pr-1" style={{ height: rowH }}>
@@ -49,21 +46,18 @@ export default function ContributionGrid({ days, today, weeks = 52, fixedCell }:
           ))}
         </div>
 
-        {/* Columns */}
+        {/* columns */}
         <div className={`flex gap-[3px] ${fixedCell ? '' : 'flex-1'}`}>
           {matrix.map((col, ci) => {
             const showMonth = ci !== 0 && colMonth[ci] && colMonth[ci] !== colMonth[ci - 1];
             const monthIdx = colMonth[ci] ? Number(colMonth[ci]!.slice(5, 7)) - 1 : 0;
             return (
-              <div
-                key={ci}
-                className={`flex min-w-0 flex-col gap-[3px] ${fixedCell ? '' : 'flex-1'}`}
-              >
+              <div key={ci} className={`flex min-w-0 flex-col gap-[3px] ${fixedCell ? '' : 'flex-1'}`}>
                 <div
-                  className="overflow-visible whitespace-nowrap text-[10px] leading-4 text-muted"
+                  className="overflow-visible whitespace-nowrap text-[10px] lowercase leading-4 text-muted"
                   style={{ height: LABEL_H }}
                 >
-                  {showMonth ? MONTH_NAMES[monthIdx] : ''}
+                  {showMonth ? MONTHS[monthIdx] : ''}
                 </div>
                 {col.map((date, ri) => {
                   if (!date) return <div key={ri} style={cellStyle} className={fixedCell ? '' : 'w-full'} />;
@@ -81,11 +75,14 @@ export default function ContributionGrid({ days, today, weeks = 52, fixedCell }:
                         })
                       }
                       onMouseLeave={() => setHover(null)}
-                      style={cellStyle}
-                      className={`rounded-[3px] ${fixedCell ? '' : 'w-full'} ${gridCellClass(
+                      style={{
+                        ...cellStyle,
+                        boxShadow: isToday ? 'inset 0 0 0 1.5px var(--ink)' : undefined,
+                      }}
+                      className={`rounded-xs ${fixedCell ? '' : 'w-full'} ${gridCellClass(
                         day?.score_pct ?? 0,
                         logged
-                      )} ${isToday ? 'ring-1 ring-inset ring-ink/80' : ''}`}
+                      )}`}
                     />
                   );
                 })}
@@ -96,10 +93,13 @@ export default function ContributionGrid({ days, today, weeks = 52, fixedCell }:
       </div>
 
       {!fixedCell && (
-        <div className="mt-2 flex items-center justify-end gap-1 text-[10px] text-muted">
+        <div className="mt-2 flex items-center justify-end gap-1.5 text-[11px] lowercase text-muted">
           <span>less</span>
           {[0, 1, 2, 3, 4].map((l) => (
-            <div key={l} className={`h-[13px] w-[13px] rounded-[3px] ${gridCellClass(l === 0 ? 0 : l * 25, l !== 0)}`} />
+            <div
+              key={l}
+              className={`h-[13px] w-[13px] rounded-xs ${gridCellClass(l === 0 ? 0 : l * 25, l !== 0)}`}
+            />
           ))}
           <span>more</span>
         </div>
@@ -107,7 +107,7 @@ export default function ContributionGrid({ days, today, weeks = 52, fixedCell }:
 
       {hover && (
         <div
-          className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-full rounded-md bg-black/90 px-2 py-1 text-xs text-ink shadow-lg ring-1 ring-edge"
+          className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-full rounded-md border border-line-2 bg-ink px-2 py-1 text-xs lowercase text-paper shadow-md"
           style={{ left: hover.x, top: hover.y - 6 }}
         >
           {hover.text}
