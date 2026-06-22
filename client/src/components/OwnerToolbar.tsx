@@ -15,6 +15,7 @@ const TOOL_BTN =
 
 export default function OwnerToolbar({ board }: { board: Board }) {
   const [panel, setPanel] = useState<Panel>(null);
+  const [open, setOpen] = useState(false);
   const logout = useLogout();
   const qc = useQueryClient();
 
@@ -52,21 +53,35 @@ export default function OwnerToolbar({ board }: { board: Board }) {
   );
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <Btn p="settings" label="settings" />
-      <Btn p="goals" label="goals" />
-      <Btn p="rewards" label="rewards" />
-      <Btn p="money" label="money" />
-      <button onClick={exportJson} title="export backup" className={TOOL_BTN}>
-        export ↓
+    <div className="flex flex-wrap items-center justify-end gap-1.5">
+      {/* a single trigger keeps the header clean; the tools reveal on demand. */}
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        title={open ? 'hide config' : 'show config'}
+        className={`${TOOL_BTN} ${open ? 'bg-card-2 text-ink' : ''}`}
+      >
+        config {open ? '▾' : '▸'}
       </button>
-      <label title="import backup" className={TOOL_BTN}>
-        import ↑
-        <input type="file" accept="application/json" className="hidden" onChange={importJson} />
-      </label>
-      <button onClick={() => logout.mutate()} title="log out" className={TOOL_BTN}>
-        log out ×
-      </button>
+
+      {open && (
+        <>
+          <Btn p="settings" label="settings" />
+          <Btn p="goals" label="goals" />
+          <Btn p="rewards" label="rewards" />
+          <Btn p="money" label="money" />
+          <button onClick={exportJson} title="export backup" className={TOOL_BTN}>
+            export ↓
+          </button>
+          <label title="import backup" className={TOOL_BTN}>
+            import ↑
+            <input type="file" accept="application/json" className="hidden" onChange={importJson} />
+          </label>
+          <button onClick={() => logout.mutate()} title="log out" className={TOOL_BTN}>
+            log out ×
+          </button>
+        </>
+      )}
 
       <SettingsPanel board={board} open={panel === 'settings'} onClose={() => setPanel(null)} />
       <GoalsPanel board={board} open={panel === 'goals'} onClose={() => setPanel(null)} />

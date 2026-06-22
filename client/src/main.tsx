@@ -20,3 +20,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </QueryClientProvider>
   </React.StrictMode>
 );
+
+// pwa: register the service worker under the app's base path (e.g. /ll/) so the
+// board is installable + works offline. scoped to BASE_URL.
+if ('serviceWorker' in navigator) {
+  const base = import.meta.env.BASE_URL; // "/ll/" or "/"
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(`${base}sw.js`, { scope: base }).catch(() => {});
+  });
+}
