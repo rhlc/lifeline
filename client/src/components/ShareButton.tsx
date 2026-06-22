@@ -14,7 +14,9 @@ export default function ShareButton({ board }: { board: Board }) {
     if (!cardRef.current) return;
     setBusy(true);
     try {
-      const canvas = await html2canvas(cardRef.current, { backgroundColor: null, scale: 2 });
+      // ensure the mono webfont is ready so the ascii art renders correctly.
+      if (document.fonts?.ready) await document.fonts.ready;
+      const canvas = await html2canvas(cardRef.current, { backgroundColor: '#f3ede0', scale: 2 });
       const link = document.createElement('a');
       link.download = `lifeline-${board.today}.png`;
       link.href = canvas.toDataURL('image/png');

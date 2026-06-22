@@ -63,7 +63,8 @@ export default function AsciiFlame({
           lineHeight: 1,
           letterSpacing: '-0.5px',
           color: cold ? 'var(--faint)' : 'var(--clay)',
-          textShadow: cold ? 'none' : '0 0 10px color-mix(in srgb, var(--clay) 22%, transparent)',
+          // rgba (not color-mix) so html2canvas can export the share card.
+          textShadow: cold ? 'none' : '0 0 10px rgba(192, 87, 46, 0.22)',
           transition: 'color var(--dur-3) var(--ease)',
           fontWeight: 700,
         }}

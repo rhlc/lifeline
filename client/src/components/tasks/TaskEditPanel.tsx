@@ -98,11 +98,11 @@ function EditForm({ task, onClose }: { task: Task; onClose: () => void }) {
       </label>
 
       <div className="flex gap-3">
-        <label className={`${field} flex-1`}>
+        <label className={`${field} min-w-0 flex-1`}>
           <span>estimate</span>
-          <input className={inputCls} value={estimate} placeholder="15m / 1h / half-day" onChange={(e) => setEstimate(e.target.value)} />
+          <input className={inputCls} value={estimate} placeholder="15m / 1h" onChange={(e) => setEstimate(e.target.value)} />
         </label>
-        <label className={`${field} flex-1`}>
+        <label className={`${field} min-w-0 flex-1`}>
           <span>work block</span>
           <input className={inputCls} value={block} placeholder="wb2" onChange={(e) => setBlock(e.target.value)} />
         </label>

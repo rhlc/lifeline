@@ -32,7 +32,7 @@ export default function SlideOver({ open, title, onClose, children }: Props) {
             ×
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
+        <div className="flex-1 overflow-y-auto overflow-x-hidden px-5 py-4">{children}</div>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ function load(count: number): string {
  */
 export default function WeekStrip({ days, selected, onSelect }: Props) {
   return (
-    <div className="flex gap-1.5">
+    <div className="flex gap-1">
       {days.map((d, i) => {
         const isSel = i === selected;
         return (
@@ -33,9 +33,9 @@ export default function WeekStrip({ days, selected, onSelect }: Props) {
             className="press focus-clay"
             style={{
               flex: 1,
-              minWidth: 40,
+              minWidth: 0,
               minHeight: 64,
-              padding: '8px 4px',
+              padding: '8px 2px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
