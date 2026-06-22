@@ -9,28 +9,14 @@ interface Props extends HTMLAttributes<HTMLSpanElement> {
   children: ReactNode;
 }
 
+// Borders use rgba (== color-mix with transparent) rather than color-mix() so
+// the share card can be exported by html2canvas, which can't parse color-mix.
 const TONES: Record<BadgeTone, { bg: string; fg: string; bd: string }> = {
   neutral: { bg: 'var(--card-2)', fg: 'var(--ink-2)', bd: 'var(--line-2)' },
-  accent: {
-    bg: 'var(--clay-tint)',
-    fg: 'var(--clay-deep)',
-    bd: 'color-mix(in srgb, var(--clay) 35%, transparent)',
-  },
-  good: {
-    bg: 'var(--good-soft)',
-    fg: 'var(--good)',
-    bd: 'color-mix(in srgb, var(--good) 38%, transparent)',
-  },
-  warn: {
-    bg: 'var(--warn-soft)',
-    fg: 'color-mix(in srgb, var(--warn) 80%, var(--ink))',
-    bd: 'color-mix(in srgb, var(--warn) 45%, transparent)',
-  },
-  bonus: {
-    bg: 'var(--bonus-soft)',
-    fg: 'var(--bonus)',
-    bd: 'color-mix(in srgb, var(--bonus) 40%, transparent)',
-  },
+  accent: { bg: 'var(--clay-tint)', fg: 'var(--clay-deep)', bd: 'rgba(192, 87, 46, 0.35)' },
+  good: { bg: 'var(--good-soft)', fg: 'var(--good)', bd: 'rgba(111, 125, 58, 0.38)' },
+  warn: { bg: 'var(--warn-soft)', fg: '#a2762b', bd: 'rgba(192, 138, 46, 0.45)' },
+  bonus: { bg: 'var(--bonus-soft)', fg: 'var(--bonus)', bd: 'rgba(177, 85, 47, 0.4)' },
 };
 
 /**

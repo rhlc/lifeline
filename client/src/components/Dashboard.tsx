@@ -9,7 +9,7 @@ import ViewingBadge from './ViewingBadge.js';
 import TodayTiles from './TodayTiles.js';
 import WorkBlocks from './WorkBlocks.js';
 import DayStatus from './DayStatus.js';
-import ContributionGrid from './ContributionGrid.js';
+import BoardTasks from './BoardTasks.js';
 import MonthRing from './MonthRing.js';
 import MoraleLine from './MoraleLine.js';
 import NextReward from './NextReward.js';
@@ -113,10 +113,8 @@ export default function Dashboard({ board }: { board: AnyBoard }) {
         {isOwner && <DayStatus engagement={engagement} streak={board.profile.current_streak} />}
       </Card>
 
-      {/* the grid — the hero */}
-      <Card label="the grid · 26 weeks">
-        <ContributionGrid days={board.days} today={board.today} weeks={26} />
-      </Card>
+      {/* tasks — quick capture + what's active (replaces the contribution grid) */}
+      <BoardTasks board={board} />
 
       {/* bottom row: this month + morale + money, next reward, goals */}
       <div className="grid grid-cols-1 gap-[18px] md:grid-cols-3">

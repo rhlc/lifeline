@@ -16,9 +16,9 @@ export default function WorkBlocks({ blocks, isOwner, onChange }: Props) {
   };
 
   return (
-    <div className="mt-4 flex items-center gap-3">
+    <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
       <span className="text-xs lowercase tracking-[0.06em] text-muted">work blocks</span>
-      <div className="flex gap-1.5 font-mono text-lg leading-none">
+      <div className="flex flex-wrap gap-2 font-mono">
         {blocks.map((hit, i) => (
           <button
             key={i}
@@ -28,9 +28,9 @@ export default function WorkBlocks({ blocks, isOwner, onChange }: Props) {
             aria-pressed={hit}
             aria-label={`block ${i + 1}: ${hit ? 'hit' : 'miss'}`}
             title={`block ${i + 1}: ${hit ? 'hit' : 'miss'}`}
-            className={`press focus-clay leading-none ${hit ? 'text-clay' : 'text-faint'} ${
-              isOwner ? 'cursor-pointer' : 'cursor-default'
-            }`}
+            className={`press focus-clay flex h-10 w-10 items-center justify-center rounded-md border text-lg leading-none sm:h-8 sm:w-8 ${
+              hit ? 'border-clay/40 bg-clay-tint text-clay' : 'border-line bg-card-2 text-faint'
+            } ${isOwner ? 'cursor-pointer' : 'cursor-default'}`}
           >
             {hit ? '█' : '░'}
           </button>
