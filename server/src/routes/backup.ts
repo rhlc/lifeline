@@ -10,6 +10,7 @@ import {
   monthsRepo,
   goalsRepo,
   rewardsRepo,
+  tasksRepo,
 } from '../db/repositories.js';
 import { buildBoard } from '../services/boardService.js';
 import { parseOr400 } from '../lib/validate.js';
@@ -35,6 +36,7 @@ const importSchema = z.object({
   months: z.array(z.any()),
   goals: z.array(z.any()),
   rewards: z.array(z.any()),
+  tasks: z.array(z.any()).optional(),
 });
 
 export default async function backupRoutes(app: FastifyInstance) {
@@ -48,6 +50,7 @@ export default async function backupRoutes(app: FastifyInstance) {
       months: monthsRepo.all(db),
       goals: goalsRepo.all(db),
       rewards: rewardsRepo.all(db),
+      tasks: tasksRepo.all(db),
     };
     return backup;
   });
@@ -60,7 +63,7 @@ export default async function backupRoutes(app: FastifyInstance) {
 
     const db = getDb();
     const tx = db.transaction(() => {
-      db.exec('DELETE FROM days; DELETE FROM months; DELETE FROM goals; DELETE FROM rewards;');
+      db.exec('DELETE FROM days; DELETE FROM months; DELETE FROM goals; DELETE FROM rewards; DELETE FROM tasks;');
       settingsRepo.update(db, data.settings);
       profileRepo.update(db, data.profile);
       for (const d of data.days as Backup['days']) {
@@ -88,6 +91,17 @@ export default async function backupRoutes(app: FastifyInstance) {
       for (const r of data.rewards as Backup['rewards']) {
         const created = rewardsRepo.create(db, { emoji: r.emoji ?? null, label: r.label, threshold: r.threshold });
         if (r.unlocked) rewardsRepo.setUnlocked(db, created.id, r.unlocked_at ?? new Date().toISOString());
+      }
+      for (const t of (data.tasks ?? []) as Backup['tasks']) {
+        tasksRepo.create(db, {
+          title: t.title,
+          status: t.status,
+          priority: t.priority,
+          project: t.project,
+          block: t.block,
+          estimate: t.estimate,
+          due_date: t.due_date,
+        });
       }
     });
     tx();

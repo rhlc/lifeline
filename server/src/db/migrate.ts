@@ -63,6 +63,18 @@ CREATE TABLE IF NOT EXISTS rewards (
   unlocked    INTEGER NOT NULL DEFAULT 0,
   unlocked_at TEXT
 );
+
+CREATE TABLE IF NOT EXISTS tasks (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  title      TEXT    NOT NULL,
+  status     TEXT    NOT NULL DEFAULT 'todo' CHECK (status IN ('todo','doing','done','blocked')),
+  priority   INTEGER CHECK (priority BETWEEN 0 AND 3),  -- 0..3, NULL = none
+  project    TEXT,                                      -- NULL = inbox
+  block      TEXT,                                      -- e.g. 'wb2'
+  estimate   TEXT,                                      -- '15m' | '1h' | 'half-day'
+  due_date   TEXT,                                      -- 'YYYY-MM-DD'
+  created_at TEXT    NOT NULL DEFAULT (datetime('now'))
+);
 `;
 
 export function migrate(db: Database.Database): void {

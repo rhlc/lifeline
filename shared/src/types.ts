@@ -77,6 +77,20 @@ export interface Reward {
   unlocked_at: string | null;
 }
 
+export type TaskStatus = 'todo' | 'doing' | 'done' | 'blocked';
+
+export interface Task {
+  id: number;
+  title: string;
+  status: TaskStatus;
+  priority: number | null; // 0..3 (p0 most urgent), null = none
+  project: string | null; // null = inbox
+  block: string | null; // e.g. 'wb2'
+  estimate: string | null; // '15m' | '1h' | 'half-day'
+  due_date: string | null; // 'YYYY-MM-DD'
+  created_at: string;
+}
+
 /** Full board returned to the logged-in owner. */
 export interface Board {
   isOwner: true;
@@ -86,6 +100,7 @@ export interface Board {
   months: Month[]; // PRIVATE
   goals: Goal[];
   rewards: Reward[];
+  tasks: Task[];
   monthPct: number;
   monthBand: MonthBand;
   today: string; // owner-tz 'YYYY-MM-DD'
@@ -99,6 +114,7 @@ export interface PublicBoard {
   days: Day[];
   goals: Goal[];
   rewards: Reward[];
+  tasks: Task[];
   monthPct: number;
   monthBand: MonthBand;
   today: string;
@@ -122,4 +138,5 @@ export interface Backup {
   months: Month[];
   goals: Goal[];
   rewards: Reward[];
+  tasks: Task[];
 }

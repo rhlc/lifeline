@@ -7,6 +7,9 @@ import type {
   Month,
   Goal,
   Reward,
+  Task,
+  TaskStatus,
+  TaskInputDTO,
 } from '@lifeline/shared';
 
 // ---- row <-> domain conversion at the boundary -----------------------------
@@ -224,5 +227,74 @@ export const rewardsRepo = {
   },
   remove(db: Database.Database, id: number): boolean {
     return db.prepare('DELETE FROM rewards WHERE id = ?').run(id).changes > 0;
+  },
+};
+
+// ---- tasks -----------------------------------------------------------------
+
+interface TaskRow {
+  id: number;
+  title: string;
+  status: string;
+  priority: number | null;
+  project: string | null;
+  block: string | null;
+  estimate: string | null;
+  due_date: string | null;
+  created_at: string;
+}
+
+function rowToTask(r: TaskRow): Task {
+  return {
+    id: r.id,
+    title: r.title,
+    status: r.status as TaskStatus,
+    priority: r.priority,
+    project: r.project,
+    block: r.block,
+    estimate: r.estimate,
+    due_date: r.due_date,
+    created_at: r.created_at,
+  };
+}
+
+/** Normalize a validated DTO into the columns a task row stores. */
+function taskFields(t: TaskInputDTO) {
+  return {
+    title: t.title,
+    status: (t.status ?? 'todo') as TaskStatus,
+    priority: t.priority ?? null,
+    project: t.project ?? null,
+    block: t.block ?? null,
+    estimate: t.estimate ?? null,
+    due_date: t.due_date ?? null,
+  };
+}
+
+export const tasksRepo = {
+  all(db: Database.Database): Task[] {
+    return (db.prepare('SELECT * FROM tasks ORDER BY id ASC').all() as TaskRow[]).map(rowToTask);
+  },
+  create(db: Database.Database, t: TaskInputDTO): Task {
+    const f = taskFields(t);
+    const info = db
+      .prepare(
+        'INSERT INTO tasks (title, status, priority, project, block, estimate, due_date) VALUES (?, ?, ?, ?, ?, ?, ?)'
+      )
+      .run(f.title, f.status, f.priority, f.project, f.block, f.estimate, f.due_date);
+    const row = db.prepare('SELECT * FROM tasks WHERE id = ?').get(Number(info.lastInsertRowid)) as TaskRow;
+    return rowToTask(row);
+  },
+  update(db: Database.Database, id: number, t: TaskInputDTO): boolean {
+    const f = taskFields(t);
+    const info = db
+      .prepare(
+        'UPDATE tasks SET title = ?, status = ?, priority = ?, project = ?, block = ?, estimate = ?, due_date = ? WHERE id = ?'
+      )
+      .run(f.title, f.status, f.priority, f.project, f.block, f.estimate, f.due_date, id);
+    return info.changes > 0;
+  },
+  remove(db: Database.Database, id: number): boolean {
+    return db.prepare('DELETE FROM tasks WHERE id = ?').run(id).changes > 0;
   },
 };

@@ -13,6 +13,7 @@ import type {
   MonthInputDTO,
   GoalInputDTO,
   RewardInputDTO,
+  TaskInputDTO,
 } from '@lifeline/shared';
 import { api, ApiError } from './client.js';
 
@@ -112,6 +113,24 @@ export function useRewardMutations() {
   });
   const remove = useMutation({
     mutationFn: (id: number) => api.del<Board>(`/api/rewards/${id}`),
+    onSuccess: setBoard,
+  });
+  return { create, update, remove };
+}
+
+export function useTaskMutations() {
+  const setBoard = useBoardSetter();
+  const create = useMutation({
+    mutationFn: (input: TaskInputDTO) => api.post<Board>('/api/tasks', input),
+    onSuccess: setBoard,
+  });
+  const update = useMutation({
+    mutationFn: (vars: { id: number; input: TaskInputDTO }) =>
+      api.put<Board>(`/api/tasks/${vars.id}`, vars.input),
+    onSuccess: setBoard,
+  });
+  const remove = useMutation({
+    mutationFn: (id: number) => api.del<Board>(`/api/tasks/${id}`),
     onSuccess: setBoard,
   });
   return { create, update, remove };
