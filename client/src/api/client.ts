@@ -5,8 +5,12 @@ export class ApiError extends Error {
   }
 }
 
+// Prefix API calls with the app's base path (e.g. "/ll") when hosted under a
+// sub-path. import.meta.env.BASE_URL is "/" at root, "/ll/" under a sub-path.
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const res = await fetch(path, {
+  const res = await fetch(BASE + path, {
     method,
     credentials: 'include',
     headers: body !== undefined ? { 'Content-Type': 'application/json' } : undefined,

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLogin } from '../api/queries.js';
 
 export default function LoginPage() {
@@ -42,9 +42,9 @@ export default function LoginPage() {
           {login.isPending ? 'Checking…' : 'Log in'}
         </button>
 
-        <a href="/" className="mt-4 block text-center text-xs text-muted hover:underline">
+        <Link to="/" className="mt-4 block text-center text-xs text-muted hover:underline">
           ← back to the board
-        </a>
+        </Link>
       </form>
     </div>
   );

@@ -6,6 +6,10 @@ import { env, isProd } from '../env.js';
 
 export const COOKIE_NAME = 'lifeline_session';
 
+// Scope the session cookie to the app's sub-path so it isn't sent to (or
+// clobbered by) anything else on the same domain. "/" when served at root.
+const COOKIE_PATH = env.BASE_PATH || '/';
+
 declare module 'fastify' {
   interface FastifyInstance {
     /** preHandler that 401s anyone without a valid owner session. */
@@ -57,11 +61,11 @@ export function setSessionCookie(reply: FastifyReply): void {
     httpOnly: true,
     sameSite: 'lax',
     secure: isProd ? env.COOKIE_SECURE : false,
-    path: '/',
+    path: COOKIE_PATH,
     maxAge: 60 * 60 * 24 * 30,
   });
 }
 
 export function clearSessionCookie(reply: FastifyReply): void {
-  reply.clearCookie(COOKIE_NAME, { path: '/' });
+  reply.clearCookie(COOKIE_NAME, { path: COOKIE_PATH });
 }

@@ -11,7 +11,7 @@ import monthRoutes from './routes/month.js';
 import goalsRoutes from './routes/goals.js';
 import rewardsRoutes from './routes/rewards.js';
 import backupRoutes from './routes/backup.js';
-import { isProd } from './env.js';
+import { env, isProd } from './env.js';
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
@@ -24,17 +24,21 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   await app.register(authPlugin);
 
-  app.get('/api/health', async () => ({ ok: true }));
+  // Everything (API + SPA) is mounted under BASE_PATH when the app is hosted on
+  // a sub-path (e.g. rahulc.xyz/ll). Empty ⇒ root, so behavior is unchanged.
+  const prefix = env.BASE_PATH;
 
-  await app.register(publicRoutes);
-  await app.register(authRoutes);
-  await app.register(boardRoutes);
-  await app.register(dayRoutes);
-  await app.register(settingsRoutes);
-  await app.register(monthRoutes);
-  await app.register(goalsRoutes);
-  await app.register(rewardsRoutes);
-  await app.register(backupRoutes);
+  app.get(`${prefix}/api/health`, async () => ({ ok: true }));
+
+  await app.register(publicRoutes, { prefix });
+  await app.register(authRoutes, { prefix });
+  await app.register(boardRoutes, { prefix });
+  await app.register(dayRoutes, { prefix });
+  await app.register(settingsRoutes, { prefix });
+  await app.register(monthRoutes, { prefix });
+  await app.register(goalsRoutes, { prefix });
+  await app.register(rewardsRoutes, { prefix });
+  await app.register(backupRoutes, { prefix });
 
   // Static SPA + SPA fallback (no-op in dev if client/dist is absent).
   await app.register(staticPlugin);

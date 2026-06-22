@@ -12,6 +12,9 @@ primary_region = "bom" # Mumbai — close to the owner
   DATABASE_PATH = "/data/lifeline.db"
   COOKIE_SECURE = "true"
   OWNER_TZ = "Asia/Kolkata"
+  # Hosted under rahulc.xyz/ll (the rahulc-xyz nginx app proxies /ll/ here).
+  # Must match the Dockerfile BASE_PATH build arg.
+  BASE_PATH = "/ll"
 
 # Persistent disk for the SQLite database. Create it with:
 #   fly volumes create lifeline_data --size 1 --region bom
@@ -30,7 +33,7 @@ primary_region = "bom" # Mumbai — close to the owner
     interval = "30s"
     timeout = "5s"
     method = "GET"
-    path = "/api/health"
+    path = "/ll/api/health"
 
 [[vm]]
   size = "shared-cpu-1x"

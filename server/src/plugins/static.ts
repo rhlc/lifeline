@@ -3,6 +3,7 @@ import fastifyStatic from '@fastify/static';
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { env } from '../env.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -19,10 +20,15 @@ export default fp(async (app) => {
     return;
   }
 
-  await app.register(fastifyStatic, { root: clientDist, wildcard: false });
+  // When mounted under a sub-path, assets live at e.g. /ll/assets/... and the
+  // SPA fallback only applies under that prefix.
+  const prefix = env.BASE_PATH;
+  await app.register(fastifyStatic, { root: clientDist, wildcard: false, prefix: `${prefix}/` });
 
   app.setNotFoundHandler((req, reply) => {
-    if (req.url.startsWith('/api/')) {
+    const path = req.url.split('?')[0];
+    const underBase = prefix === '' || path === prefix || path.startsWith(`${prefix}/`);
+    if (!underBase || path.startsWith(`${prefix}/api/`)) {
       return reply.code(404).send({ error: 'not found' });
     }
     return reply.sendFile('index.html');

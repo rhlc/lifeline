@@ -21,6 +21,15 @@ const envSchema = z.object({
     .default('false')
     .transform((v) => v === 'true'),
   OWNER_TZ: z.string().default('Asia/Kolkata'),
+  // Sub-path the app is mounted under (e.g. "/ll" for rahulc.xyz/ll). Empty ⇒
+  // served at the domain root. Normalized to "" or "/slug" (no trailing slash).
+  BASE_PATH: z
+    .string()
+    .default('')
+    .transform((v) => {
+      const slug = v.replace(/^\/+|\/+$/g, '');
+      return slug ? `/${slug}` : '';
+    }),
 });
 
 const parsed = envSchema.safeParse(process.env);

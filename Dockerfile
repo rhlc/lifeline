@@ -13,6 +13,12 @@ COPY server/package.json server/
 COPY client/package.json client/
 RUN npm ci
 
+# Sub-path the app is served under (rahulc.xyz/ll). Vite bakes this into the
+# client at build time (asset URLs, router basename, API calls). The server
+# reads BASE_PATH again at runtime from fly.toml [env].
+ARG BASE_PATH=/ll
+ENV BASE_PATH=$BASE_PATH
+
 # Build all three workspaces, then drop dev deps for a lean runtime.
 COPY . .
 RUN npm run build && npm prune --omit=dev
