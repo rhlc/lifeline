@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { Profile } from '@lifeline/shared';
 import { levelDef, levelProgress } from '@lifeline/shared';
 import { Wordmark, Badge, ProgressBar, AsciiFlame } from './ui/index.js';
@@ -38,6 +39,13 @@ export default function HeaderStrip({ profile }: { profile: Profile }) {
         size="md"
         title={`current streak. longest: ${profile.longest_streak} · freezes left: ${profile.freezes_left_this_month}`}
       />
+
+      <Link
+        to="/tasks"
+        className="rounded-full border border-transparent px-3 py-1 font-mono text-sm lowercase text-muted no-underline transition-colors hover:bg-card-2 hover:text-ink"
+      >
+        tasks →
+      </Link>
     </header>
   );
 }

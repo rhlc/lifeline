@@ -10,6 +10,7 @@ import settingsRoutes from './routes/settings.js';
 import monthRoutes from './routes/month.js';
 import goalsRoutes from './routes/goals.js';
 import rewardsRoutes from './routes/rewards.js';
+import tasksRoutes from './routes/tasks.js';
 import backupRoutes from './routes/backup.js';
 import { env, isProd } from './env.js';
 
@@ -38,6 +39,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(monthRoutes, { prefix });
   await app.register(goalsRoutes, { prefix });
   await app.register(rewardsRoutes, { prefix });
+  await app.register(tasksRoutes, { prefix });
   await app.register(backupRoutes, { prefix });
 
   // Static SPA + SPA fallback (no-op in dev if client/dist is absent).

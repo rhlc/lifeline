@@ -55,6 +55,21 @@ export const rewardInputSchema = z.object({
 });
 export type RewardInputDTO = z.infer<typeof rewardInputSchema>;
 
+export const taskInputSchema = z.object({
+  title: z.string().min(1).max(200),
+  status: z.enum(['todo', 'doing', 'done', 'blocked']).optional(),
+  priority: z.number().int().min(0).max(3).nullable().optional(),
+  project: z.string().max(80).nullable().optional(),
+  block: z.string().max(20).nullable().optional(),
+  estimate: z.string().max(20).nullable().optional(),
+  due_date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'expected YYYY-MM-DD')
+    .nullable()
+    .optional(),
+});
+export type TaskInputDTO = z.infer<typeof taskInputSchema>;
+
 export const loginSchema = z.object({
   password: z.string().min(1).max(200),
 });

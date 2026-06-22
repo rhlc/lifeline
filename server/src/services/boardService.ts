@@ -13,6 +13,7 @@ import {
   monthsRepo,
   goalsRepo,
   rewardsRepo,
+  tasksRepo,
 } from '../db/repositories.js';
 import { computeDayScore } from '../domain/scoring.js';
 import { recomputeStreak } from '../domain/streak.js';
@@ -30,6 +31,7 @@ export function buildBoard(db: Database.Database, today: string): Board {
   const months = monthsRepo.all(db);
   const goals = goalsRepo.all(db);
   const rewards = rewardsRepo.all(db);
+  const tasks = tasksRepo.all(db);
   const pct = calcMonthPct(days, monthOf(today));
 
   return {
@@ -40,6 +42,7 @@ export function buildBoard(db: Database.Database, today: string): Board {
     months,
     goals,
     rewards,
+    tasks,
     monthPct: pct,
     monthBand: monthBand(pct),
     today,
@@ -56,6 +59,7 @@ export function toPublicBoard(board: Board): PublicBoard {
     days: board.days,
     goals: board.goals,
     rewards: board.rewards,
+    tasks: board.tasks,
     monthPct: board.monthPct,
     monthBand: board.monthBand,
     today: board.today,
